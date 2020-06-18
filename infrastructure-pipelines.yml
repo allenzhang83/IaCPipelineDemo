@@ -1,0 +1,73 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+trigger:
+- master
+
+stages:
+- stage: Dev
+  displayName: 'Deploy to dev'
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    - group: DevGroup
+  jobs:
+    - deployment: DeployInfrastructure
+      displayName: 'Deploy ARM template'
+      environment: DevEnv
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: 'Azure'
+                  subscriptionId: 'befef620-bbb0-446e-8a94-a11b1fdd4c8e'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: 'TestIaCPipeline-Dev'
+                  location: 'Australia East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: 'template.json'
+                  csmParametersFile: 'parameters.json'
+                  overrideParameters: '-environment $(Environment)'
+                  deploymentMode: 'Incremental'
+- stage: Test
+  displayName: 'Deploy to test'
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    - group: TestGroup
+  jobs:
+    - deployment: DeployInfrastructure
+      displayName: 'Deploy ARM template'
+      environment: TestEnv
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: 'Azure'
+                  subscriptionId: 'befef620-bbb0-446e-8a94-a11b1fdd4c8e'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: 'TestIaCPipeline-Test'
+                  location: 'Australia East'
+                  templateLocation: 'Linked artifact'
+                  csmFile: 'template.json'
+                  csmParametersFile: 'parameters.json'
+                  overrideParameters: '-environment $(Environment)'
+                  deploymentMode: 'Incremental'
+
+
+  
+
+
+
+
+
+
