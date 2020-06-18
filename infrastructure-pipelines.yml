@@ -31,8 +31,8 @@ stages:
                   resourceGroupName: 'TestIaCPipeline-Dev'
                   location: 'Australia East'
                   templateLocation: 'Linked artifact'
-                  csmFile: 'template.json'
-                  csmParametersFile: 'parameters.json'
+                  csmFile: '$(Build.SourcesDirectory)/template.json'
+                  csmParametersFile: '$(Build.SourcesDirectory)/parameters.json'
                   overrideParameters: '-environment $(Environment)'
                   deploymentMode: 'Incremental'
 - stage: Test
@@ -58,8 +58,8 @@ stages:
                   resourceGroupName: 'TestIaCPipeline-Test'
                   location: 'Australia East'
                   templateLocation: 'Linked artifact'
-                  csmFile: 'template.json'
-                  csmParametersFile: 'parameters.json'
+                  csmFile: '$(Build.SourcesDirectory)/template.json'
+                  csmParametersFile: '$(Build.SourcesDirectory)/parameters.json'
                   overrideParameters: '-environment $(Environment)'
                   deploymentMode: 'Incremental'
 
