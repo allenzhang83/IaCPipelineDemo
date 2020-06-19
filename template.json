@@ -11,14 +11,14 @@
 			"type": "String"
 		}
 	},
-	"variables": {
-		"secretResourceId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', [concat(parameters('appName'), '-key-vault')], 'Secret')]",
-		"appInsightsName": "[concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')]",
-		"storageAccountName": "[concat(parameters('appName'), '-', 'parameters('environment')', '-storage')]",
-		"appSvcPlanName": "[concat(parameters('appName'), '-', 'parameters('environment')', '-app-svc-plan')]",
-		"functionAppName": "[concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')]",
-		"keyVaultName": "concat(parameters('appName'), '-', 'parameters('environment')', '-key-vault')]"
-	},
+  "variables": {
+    "appInsightsName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
+    "appSvcPlanName": "concat(parameters('appName'), '-', 'parameters('environment')', '-app-svc-plan')",
+    "functionAppName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
+    "keyVaultName": "concat(parameters('appName'), '-', 'parameters('environment')', '-key-vault')]",
+    "secretResourceId": "resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', [concat(parameters('appName'), '-key-vault')], 'Secret')",
+    "storageAccountName": "concat(parameters('appName'), '-', 'parameters('environment')', '-storage')"
+  },
 	"resources": [
 		{
 			"apiVersion": "2014-04-01",
@@ -89,12 +89,12 @@
 		{
 			"type": "Microsoft.Web/sites",
 			"apiVersion": "2018-11-01",
-			"name": "[variables('functionAppName')",
+			"name": "variables('functionAppName')",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName')]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName'))]",
 				"[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-            ],
+      ],
 			"kind": "functionapp",
 			"identity": {
 				"type": "SystemAssigned"
@@ -137,7 +137,7 @@
                 "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
             ],
             "properties": {
-                "siteName": "[variables('functionAppName')",
+                "siteName": "variables('functionAppName')",
                 "hostNameType": "Verified"
             }
 		},
@@ -147,8 +147,8 @@
 			"apiVersion": "2018-02-14",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
-                "[resourceId('Microsoft.Web/sites', [variables('functionAppName'))]"
-            ],
+          "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+      ],
 			"properties": {
 				"tenantId": "[subscription().tenantId]",
 				"sku": {
@@ -158,7 +158,7 @@
 				"accessPolicies": [
 					{
 						"tenantId": "[subscription().tenantId]",
-						"objectId": "[reference(resourceId('Microsoft.Web/sites', [variables('functionAppName')), '2016-03-01', 'Full').identity.principalId]",
+						"objectId": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2016-03-01').identity.principalId]",
 						"permissions": {
 						  "keys": [],
 						  "secrets": ["get", "list"],
