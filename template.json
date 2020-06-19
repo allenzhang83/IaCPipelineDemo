@@ -12,27 +12,27 @@
 		}
 	},
 	"variables": {
-		"appInsightsName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
-		"appSvcPlanName": "concat(parameters('appName'), '-', 'parameters('environment')', '-app-svc-plan')",
-		"functionAppName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
-		"keyVaultName": "concat(parameters('appName'), '-', 'parameters('environment')', '-key-vault')]",
-		"secretResourceId": "resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', [concat(parameters('appName'), '-key-vault')], 'Secret')",
-		"storageAccountName": "concat(parameters('appName'), '-', 'parameters('environment')', '-storage')"
+		"appInsightsName": "[concat(parameters('appName'), '-', parameters('environment'), '-function-app')]",
+		"appSvcPlanName": "[concat(parameters('appName'), '-', parameters('environment'), '-app-svc-plan')]",
+		"functionAppName": "[concat(parameters('appName'), '-', parameters('environment'), '-function-app')]",
+		"keyVaultName": "[concat(parameters('appName'), '-', parameters('environment'), '-key-vault')]",
+		"secretResourceId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', concat(parameters('appName'), '-key-vault'), 'Secret')]",
+		"storageAccountName": "[concat(parameters('appName'), '-', parameters('environment'), '-storage')]"
 	},
 	"resources": [
 		{
 			"apiVersion": "2014-04-01",
 			"type": "Microsoft.Insights/components",
 			"location": "[resourceGroup().location]",
-			"name": "variables('appInsightsName')",
+			"name": "[variables('appInsightsName')]",
 			"properties": {
-				"applicationId": "variables['appInsightsName']"
+				"applicationId": "[variables('appInsightsName')]"
 			}
 		},
 		{
 			"type": "Microsoft.Storage/storageAccounts",
 			"apiVersion": "2019-06-01",
-			"name": "variables('storageAccountName')",
+			"name": "[variables('storageAccountName')]",
 			"location": "[resourceGroup().location]",
 			"sku": {
 				"name": "Standard_LRS",
@@ -65,7 +65,7 @@
 		{
 			"type": "Microsoft.Web/serverfarms",
 			"apiVersion": "2018-02-01",
-			"name": "variables('appSvcPlanName')",
+			"name": "[variables('appSvcPlanName')]",
 			"location": "[resourceGroup().location]",
 			"sku": {
 				"name": "Y1",
@@ -89,7 +89,7 @@
 		{
 			"type": "Microsoft.Web/sites",
 			"apiVersion": "2018-11-01",
-			"name": "variables('functionAppName')",
+			"name": "[variables('functionAppName')]",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
 				"[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName'))]",
@@ -137,12 +137,12 @@
 				"[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
 			],
 			"properties": {
-				"siteName": "variables('functionAppName')",
+				"siteName": "[variables('functionAppName')]",
 				"hostNameType": "Verified"
 			}
 		},
 		{
-			"name": "variables('keyVaultName')",
+			"name": "[variables('keyVaultName')]",
 			"type": "Microsoft.KeyVault/vaults",
 			"apiVersion": "2018-02-14",
 			"location": "[resourceGroup().location]",
