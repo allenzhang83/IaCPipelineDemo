@@ -16,7 +16,6 @@
 		"appSvcPlanName": "[concat(parameters('appName'), '-', parameters('environment'), '-app-svc-plan')]",
 		"functionAppName": "[concat(parameters('appName'), '-', parameters('environment'), '-function-app')]",
 		"keyVaultName": "[concat(parameters('appName'), '-', parameters('environment'), '-key-vault')]",
-		"secretResourceId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', concat(parameters('appName'), '-', parameters('environment'), '-key-vault'), 'Secret')]",
 		"storageAccountName": "[concat(parameters('appName'), parameters('environment'), 'storage')]"
 	},
 	"resources": [
@@ -184,7 +183,8 @@
 				"[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
 			],
 			"properties": {
-				"Secret": "[concat('@Microsoft.KeyVault(SecretUri=', reference(variables('secretResourceId'), '2018-02-14').secretUri, ')')]"
+				"Secret": "[concat('@Microsoft.KeyVault(SecretUri=https://', variables('keyVaultName'), '.vault.azure.net/secrets/Secret/)')]",
+				"APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('appInsightsName')), '2015-05-01').InstrumentationKey]"
 			}
 		}
 	]
