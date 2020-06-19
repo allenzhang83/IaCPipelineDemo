@@ -1,24 +1,24 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"appName": {
-            "defaultValue": "iacdemo",
-            "type": "String"
-        },
+			"defaultValue": "iacdemo",
+			"type": "String"
+		},
 		"environment": {
 			"defaultValue": "dev",
 			"type": "String"
 		}
 	},
-  "variables": {
-    "appInsightsName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
-    "appSvcPlanName": "concat(parameters('appName'), '-', 'parameters('environment')', '-app-svc-plan')",
-    "functionAppName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
-    "keyVaultName": "concat(parameters('appName'), '-', 'parameters('environment')', '-key-vault')]",
-    "secretResourceId": "resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', [concat(parameters('appName'), '-key-vault')], 'Secret')",
-    "storageAccountName": "concat(parameters('appName'), '-', 'parameters('environment')', '-storage')"
-  },
+	"variables": {
+		"appInsightsName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
+		"appSvcPlanName": "concat(parameters('appName'), '-', 'parameters('environment')', '-app-svc-plan')",
+		"functionAppName": "concat(parameters('appName'), '-', 'parameters('environment')', '-function-app')",
+		"keyVaultName": "concat(parameters('appName'), '-', 'parameters('environment')', '-key-vault')]",
+		"secretResourceId": "resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', [concat(parameters('appName'), '-key-vault')], 'Secret')",
+		"storageAccountName": "concat(parameters('appName'), '-', 'parameters('environment')', '-storage')"
+	},
 	"resources": [
 		{
 			"apiVersion": "2014-04-01",
@@ -40,51 +40,51 @@
 			},
 			"kind": "Storage",
 			"properties": {
-                "networkAcls": {
-                    "bypass": "AzureServices",
-                    "virtualNetworkRules": [],
-                    "ipRules": [],
-                    "defaultAction": "Allow"
-                },
-                "supportsHttpsTrafficOnly": true,
-                "encryption": {
-                    "services": {
-                        "file": {
-                            "keyType": "Account",
-                            "enabled": true
-                        },
-                        "blob": {
-                            "keyType": "Account",
-                            "enabled": true
-                        }
-                    },
-                    "keySource": "Microsoft.Storage"
-                }
-            }
+				"networkAcls": {
+					"bypass": "AzureServices",
+					"virtualNetworkRules": [],
+					"ipRules": [],
+					"defaultAction": "Allow"
+				},
+				"supportsHttpsTrafficOnly": true,
+				"encryption": {
+					"services": {
+						"file": {
+							"keyType": "Account",
+							"enabled": true
+						},
+						"blob": {
+							"keyType": "Account",
+							"enabled": true
+						}
+					},
+					"keySource": "Microsoft.Storage"
+				}
+			}
 		},
 		{
 			"type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2018-02-01",
+			"apiVersion": "2018-02-01",
 			"name": "variables('appSvcPlanName')",
 			"location": "[resourceGroup().location]",
 			"sku": {
-                "name": "Y1",
-                "tier": "Dynamic",
-                "size": "Y1",
-                "family": "Y",
-                "capacity": 0
-            },
-            "kind": "functionapp",
-            "properties": {
-                "perSiteScaling": false,
-                "maximumElasticWorkerCount": 1,
-                "isSpot": false,
-                "reserved": false,
-                "isXenon": false,
-                "hyperV": false,
-                "targetWorkerCount": 0,
-                "targetWorkerSizeId": 0
-            }
+				"name": "Y1",
+				"tier": "Dynamic",
+				"size": "Y1",
+				"family": "Y",
+				"capacity": 0
+			},
+			"kind": "functionapp",
+			"properties": {
+				"perSiteScaling": false,
+				"maximumElasticWorkerCount": 1,
+				"isSpot": false,
+				"reserved": false,
+				"isXenon": false,
+				"hyperV": false,
+				"targetWorkerCount": 0,
+				"targetWorkerSizeId": 0
+			}
 		},
 		{
 			"type": "Microsoft.Web/sites",
@@ -92,9 +92,9 @@
 			"name": "variables('functionAppName')",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName'))]",
+				"[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName'))]",
 				"[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ],
+			],
 			"kind": "functionapp",
 			"identity": {
 				"type": "SystemAssigned"
@@ -103,43 +103,43 @@
 				"enabled": true,
 				"hostNameSslStates": [
 					{
-                        "name": "[concat(variables('functionAppName'), '.azurewebsites.net')]",
-                        "sslState": "Disabled",
-                        "hostType": "Standard"
-                    },
-                    {
-                        "name": "[concat(variables('functionAppName'), '.scm.azurewebsites.net')]",
-                        "sslState": "Disabled",
-                        "hostType": "Repository"
-                    }
+						"name": "[concat(variables('functionAppName'), '.azurewebsites.net')]",
+						"sslState": "Disabled",
+						"hostType": "Standard"
+					},
+					{
+						"name": "[concat(variables('functionAppName'), '.scm.azurewebsites.net')]",
+						"sslState": "Disabled",
+						"hostType": "Repository"
+					}
 				],
 				"serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appSvcPlanName'))]",
 				"reserved": false,
-                "isXenon": false,
-                "hyperV": false,
-                "siteConfig": {},
-                "scmSiteAlsoStopped": false,
-                "clientAffinityEnabled": true,
-                "clientCertEnabled": false,
-                "hostNamesDisabled": false,
-                "containerSize": 1536,
-                "dailyMemoryTimeQuota": 0,
-                "httpsOnly": false,
-                "redundancyMode": "None"
+				"isXenon": false,
+				"hyperV": false,
+				"siteConfig": {},
+				"scmSiteAlsoStopped": false,
+				"clientAffinityEnabled": true,
+				"clientCertEnabled": false,
+				"hostNamesDisabled": false,
+				"containerSize": 1536,
+				"dailyMemoryTimeQuota": 0,
+				"httpsOnly": false,
+				"redundancyMode": "None"
 			}
 		},
 		{
 			"type": "Microsoft.Web/sites/hostNameBindings",
-            "apiVersion": "2016-08-01",
-            "name": "[concat(variables('functionAppName'), '/', variables('functionAppName'), '.azurewebsites.net')]",
-            "location": "Australia East",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
-            ],
-            "properties": {
-                "siteName": "variables('functionAppName')",
-                "hostNameType": "Verified"
-            }
+			"apiVersion": "2016-08-01",
+			"name": "[concat(variables('functionAppName'), '/', variables('functionAppName'), '.azurewebsites.net')]",
+			"location": "Australia East",
+			"dependsOn": [
+				"[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+			],
+			"properties": {
+				"siteName": "variables('functionAppName')",
+				"hostNameType": "Verified"
+			}
 		},
 		{
 			"name": "variables('keyVaultName')",
@@ -147,23 +147,23 @@
 			"apiVersion": "2018-02-14",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
-          "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
-      ],
+				"[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+			],
 			"properties": {
 				"tenantId": "[subscription().tenantId]",
 				"sku": {
-				  "family": "A",
-				  "name": "standard"
+					"family": "A",
+					"name": "standard"
 				},
 				"accessPolicies": [
 					{
 						"tenantId": "[subscription().tenantId]",
 						"objectId": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2016-03-01').identity.principalId]",
 						"permissions": {
-						  "keys": [],
-						  "secrets": ["get", "list"],
-						  "certificates": [],
-						  "storage": []
+							"keys": [],
+							"secrets": [ "get", "list" ],
+							"certificates": [],
+							"storage": []
 						}
 					}
 				],
@@ -178,9 +178,9 @@
 			"apiVersion": "2018-11-01",
 			"location": "[resourceGroup().location]",
 			"dependsOn": [
-                "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]",
-				"[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-            ],
+				"[resourceId('Microsoft.Web/sites', variables('functionAppName'))]",
+				"[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+			],
 			"properties": {
 				"Secret": "[concat('@Microsoft.KeyVault(SecretUri=', reference(variables('secretResourceId'), '2018-02-14').secretUri, ')')]"
 			}
