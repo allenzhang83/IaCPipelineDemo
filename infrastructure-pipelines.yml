@@ -8,6 +8,26 @@ trigger:
 - master
 
 stages:
+- stage: Publish Artifact
+  displayName: Publish template files as artifact
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+    - job: PublishArtifact
+      displayName: Copy and publish artifact
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: '$(Build.SourcesDirectory)'
+            Contents: '**'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
 - stage: Dev
   displayName: 'Deploy to dev'
   pool:
@@ -31,8 +51,8 @@ stages:
                   resourceGroupName: 'TestIaCPipeline-Dev'
                   location: 'Australia East'
                   templateLocation: 'Linked artifact'
-                  csmFile: '$(Build.SourcesDirectory)/template.json'
-                  csmParametersFile: '$(Build.SourcesDirectory)/parameters.json'
+                  csmFile: '$(Agent.BuildDirectory)/drop/template.json'
+                  csmParametersFile: '$(Agent.BuildDirectory)/drop/parameters.json'
                   overrideParameters: '-environment $(Environment)'
                   deploymentMode: 'Incremental'
 - stage: Test
@@ -58,8 +78,8 @@ stages:
                   resourceGroupName: 'TestIaCPipeline-Test'
                   location: 'Australia East'
                   templateLocation: 'Linked artifact'
-                  csmFile: '$(Build.SourcesDirectory)/template.json'
-                  csmParametersFile: '$(Build.SourcesDirectory)/parameters.json'
+                  csmFile: '$(Agent.BuildDirectory)/drop/template.json'
+                  csmParametersFile: '$(Agent.BuildDirectory)/drop/parameters.json'
                   overrideParameters: '-environment $(Environment)'
                   deploymentMode: 'Incremental'
 
