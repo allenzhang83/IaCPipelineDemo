@@ -8,7 +8,7 @@ trigger:
 - master
 
 stages:
-- stage: Publish Artifact
+- stage: PublishArtifact
   displayName: Publish template files as artifact
   pool:
     vmImage: 'ubuntu-latest'
