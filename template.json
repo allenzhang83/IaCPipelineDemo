@@ -116,7 +116,34 @@
 				"reserved": false,
 				"isXenon": false,
 				"hyperV": false,
-				"siteConfig": {},
+				"siteConfig": {
+					"appSettings": [
+						{
+							"name": "AzureWebJobsStorage",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "WEBSITE_CONTENTSHARE",
+							"value": "[toLower(variables('functionAppName'))]"
+						},
+						{
+							"name": "FUNCTIONS_EXTENSION_VERSION",
+							"value": "~3"
+						},
+						{
+							"name": "FUNCTIONS_WORKER_RUNTIME",
+							"value": "dotnet"
+						},
+						{
+							"name": "WEBSITE_RUN_FROM_PACKAGE",
+							"value": "1"
+						}
+					]
+				},
 				"scmSiteAlsoStopped": false,
 				"clientAffinityEnabled": true,
 				"clientCertEnabled": false,
