@@ -17,7 +17,7 @@
 		"functionAppName": "[concat(parameters('appName'), '-', parameters('environment'), '-function-app')]",
 		"keyVaultName": "[concat(parameters('appName'), '-', parameters('environment'), '-key-vault')]",
 		"secretResourceId": "[resourceId(resourceGroup().name, 'Microsoft.KeyVault/vaults/secrets', concat(parameters('appName'), '-key-vault'), 'Secret')]",
-		"storageAccountName": "[concat(parameters('appName'), '-', parameters('environment'), '-storage')]"
+		"storageAccountName": "[concat(parameters('appName'), parameters('environment'), 'storage')]"
 	},
 	"resources": [
 		{
